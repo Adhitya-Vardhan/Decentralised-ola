@@ -47,7 +47,7 @@ contract Dola{
     // event used to inform user of trip completion/ cancellation / reset
     event undone(uint usrNumber, uint pairNumber, uint cancelFee);
     
-    constructor() public {
+    constructor() {
         
     }
     
@@ -163,7 +163,7 @@ contract Dola{
         require(users[msg.sender].isUser==true, "Need to be a user to inform rider");
         require(users[msg.sender].state==Status.DRIVER, "User needs to be in driver mode to inform rider");
         require(users[msg.sender].currPairing != address(0), "Driver needs to have an assigned rider to inform");
-        require(now<=users[msg.sender].arrivalTime, "You are too late to arrive");
+        require(block.timestamp<=users[msg.sender].arrivalTime, "You are too late to arrive");
         int dist = (loc[0] - users[users[msg.sender].currPairing].pickup.lat) * (loc[0] - users[users[msg.sender].currPairing].pickup.lat) 
                   + (loc[1] - users[users[msg.sender].currPairing].pickup.long) * (loc[1] - users[users[msg.sender].currPairing].pickup.long);
         require(dist<=13623770, "You are more that 0.2 miles away from the rider");
@@ -218,7 +218,7 @@ contract Dola{
         }
         else{
             if(users[msg.sender].state == Status.RIDER){
-                if(users[msg.sender].driverArrived==false && now>users[msg.sender].arrivalTime){
+                if(users[msg.sender].driverArrived==false && block.timestamp>users[msg.sender].arrivalTime){
                     payable(msg.sender).transfer(msg.value);
                     emit undone(users[msg.sender].number, users[users[msg.sender].currPairing].number, 0);
                     reset(msg.sender);
@@ -228,7 +228,7 @@ contract Dola{
                     reset(msg.sender);
                 }
             }else{
-                if(users[msg.sender].driverArrived==true && now>users[msg.sender].arrivalTime){
+                if(users[msg.sender].driverArrived==true && block.timestamp>users[msg.sender].arrivalTime){
                     payable(msg.sender).transfer(msg.value);
                     emit undone(users[msg.sender].number, users[users[msg.sender].currPairing].number, 0);
                     reset(msg.sender);
