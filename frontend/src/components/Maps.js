@@ -1,6 +1,6 @@
 import { useState, useCallback, memo } from "react";
 import { GoogleMap, useJsApiLoader } from "@react-google-maps/api";
-//import console from "console-browserify";
+import console from "console-browserify";
 
 const containerStyle = {
   width: "400px",

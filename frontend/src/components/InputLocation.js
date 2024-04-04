@@ -1,30 +1,77 @@
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
-import { useState } from "react";
-import { fromPlaceId, setKey } from "react-geocode";
+import { geocodeByPlaceId } from "react-google-places-autocomplete";
+import console from "console-browserify";
+import { useContext, useEffect, useState } from "react";
+//import { fromPlaceId, setKey, geocode, RequestType } from "react-geocode";
+import { SourceContext } from "../context/SourceContext";
+import { DestinationContext } from "../context/DestinationContext";
 
 export default function InputLocation({ type }) {
   const [value, setValue] = useState(null);
-  setKey(process.env.REACT_APP_PLACE_KEY);
+  const [placeholder, setPlaceholder] = useState();
+  const { source, setSource } = useContext(SourceContext);
+  const { destination, setDestination } = useContext(DestinationContext);
+
+  // setKey(process.env.REACT_APP_PLACE_KEY);
+
+  useEffect(() => {
+    type === "source"
+      ? setPlaceholder("Pickup Location")
+      : setPlaceholder("Dropoff Location");
+  }, []);
+
+  useEffect(() => {
+    if (source) {
+      console.log(source);
+    } else if (destination) {
+      console.log(destination);
+    }
+  }, [source, destination]);
+
   // get the lat and log from the placeId so as to push it into the block chain
   const getLatAndLng = (place, type) => {
     const placeId = place.value.place_id;
-
-    fromPlaceId(placeId)
-      .then(({ results }) => {
-        const { lat, lng } = results[0].geometry.location;
-        console.log(lat, lng);
-      })
-      .catch(console.error);
+    geocodeByPlaceId(placeId)
+      .then((results) => console.log(results[0].geometry.location.lat()))
+      .catch((error) => console.error(error));
+    //const{PlacesService} = await google.maps.importLibrary("places")
     // const service = new google.maps.places.PlacesService(
     //   document.createElement("div")
     // );
-    // service.getDetails({ placeId }, (place, status) => {
+    // PlacesService.getDetails({ placeId }, (place, status) => {
     //   if (status === "OK" && place.geometry && place.geometry.location) {
     //     console.log(place.geometry.location.lat());
     //   }
     // });
+    //  console.log(place.geometry.location);
+    // setKey(process.env.REACT_APP_PLACE_KEY);
+    // fromPlaceId(placeId)
+    //   .then(({ results }) => {
+    //     const { lat, lng } = results[0].geometry.location;
+    //     if (type === "source") {
+    //       setSource({
+    //         lat: lat,
+    //         lng: lng,
+    //         name: place.label,
+    //         label: place.value.structured_formatting.main_text,
+    //       });
+    //     } else {
+    //       setDestination({
+    //         lat: lat,
+    //         lng: lng,
+    //         name: place.formatted_address,
+    //         label: place.name,
+    //       });
+    //     }
+    //   })
+    //   .catch(console.error);
+  };
 
-    console.log(placeId);
+  const handlePlaceChange = (place) => {
+    if (place) {
+      getLatAndLng(place, type);
+    }
+    setValue(place);
   };
   return (
     <div className="input" style={{ marginBottom: "10px" }}>
@@ -33,10 +80,9 @@ export default function InputLocation({ type }) {
         selectProps={{
           value,
           onChange: (place) => {
-            getLatAndLng(place, type);
-            setValue(place);
+            handlePlaceChange(place, type);
           },
-          placeholder: "pickup Location",
+          placeholder: placeholder,
           isClearable: true,
           components: {
             DropdownIndicator: false,
