@@ -1,0 +1,40 @@
+/* Overall form container */
+.rider_form {
+  display: flex; /* Arrange elements in a row (adjust if needed)*/
+  flex-direction: column; /* Stack elements vertically */
+  align-items: center; /* Center the content horizontally */
+  width: 20%; /* Control the form width */
+  margin: 20px auto; /* Center the form with top/bottom margin */
+  padding: 20px;
+  border: 1px solid #ddd; /* Subtle border */
+  border-radius: 5px; /* Slightly rounded corners */
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1); /* Light shadow */
+}
+
+/* Form title  */
+.rider_form p {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 20px; /* Space below the title */
+}
+
+/* Each InputLocation (assuming it has its own styling) */
+.rider_form .InputLocation {
+  margin-bottom: 15px; /* Space between inputs */
+  width: 100%; /* Inputs stretch across the container */
+}
+
+/* Search button */
+.rider_form button {
+  padding: 10px 20px;
+  background-color: #007bff; /* Example color */
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background-color 0.3s ease; /* Smooth hover effect */
+}
+
+.rider_form button:hover {
+  background-color: #0056b3; /* Slightly darker on hover */
+}
