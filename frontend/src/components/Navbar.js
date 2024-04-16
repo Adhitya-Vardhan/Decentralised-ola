@@ -18,7 +18,7 @@ export default function Navbar() {
             </Link>
           </li>
           <li className="navbar-item">
-            <Link to="/Driver" className="navbar-link">
+            <Link to="/drive" className="navbar-link">
               Driver
             </Link>
           </li>

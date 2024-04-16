@@ -7,6 +7,8 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { SourceContext } from "./context/SourceContext";
 import { DestinationContext } from "./context/DestinationContext";
 import { MoralisProvider } from "react-moralis";
+import DriverPage from "./pages/DriverPage";
+import { LoadScript } from "@react-google-maps/api";
 
 function App() {
   const [source, setSource] = useState();
@@ -15,14 +17,20 @@ function App() {
     <MoralisProvider initializeOnMount={false}>
       <SourceContext.Provider value={{ source, setSource }}>
         <DestinationContext.Provider value={{ destination, setDestination }}>
-          <div>
-            <Router>
-              <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/rider" element={<RiderPage />} />
-              </Routes>
-            </Router>
-          </div>
+          <LoadScript
+            libraries={["places"]}
+            googleMapsApiKey={process.env.REACT_APP_MAP_KEY}
+          >
+            <div>
+              <Router>
+                <Routes>
+                  <Route path="/" element={<HomePage />} />
+                  <Route path="/rider" element={<RiderPage />} />
+                  <Route path="/drive" element={<DriverPage />} />
+                </Routes>
+              </Router>
+            </div>
+          </LoadScript>
         </DestinationContext.Provider>
       </SourceContext.Provider>
     </MoralisProvider>
