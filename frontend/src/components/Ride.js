@@ -6,32 +6,33 @@ import { useWeb3Contract } from "react-moralis";
 import { useContext, useEffect } from "react";
 import { SourceContext } from "../context/SourceContext";
 import { DestinationContext } from "../context/DestinationContext";
+import CarListOptions from "./CarListOptions";
 
 export default function Ride() {
   const { source, setSource } = useContext(SourceContext);
   const { destination, setDestination } = useContext(DestinationContext);
-  const cost = 23;
+  const cost = 22;
 
-  useEffect(() => {
-    if (source) {
-      console.log(source);
+  function __blockifyCoords(loc) {
+    if (!loc || typeof loc !== "object" || !loc.lat || !loc.lng) {
+      return [0, 0]; // or any default values you prefer
     }
-  }, [source]);
+    return [
+      Math.round(parseFloat(loc.lat) * 1000000),
+      Math.round(parseFloat(loc.lng) * 1000000),
+    ];
+  }
 
   const { runContractFunction: requestRide } = useWeb3Contract({
     abi: Dola.abi,
     contractAddress: process.env.REACT_APP_CONTRACT,
     functionName: "rideRequest",
-    params: { pick: source, drop: destination, tripCost: cost },
+    params: {
+      pick: __blockifyCoords(source),
+      drop: __blockifyCoords(destination),
+      tripCost: cost,
+    },
   });
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    await requestRide({
-      onSuccess: (tx) => handleSetOnSuccess(tx),
-      onErro: (error) => console.log(error),
-    });
-  };
 
   async function handleSetOnSuccess(tx) {
     await tx.wait(1);
@@ -41,13 +42,35 @@ export default function Ride() {
 
   return (
     <>
-      <div className="rider_form">
-        <p>get ride</p>
-        <InputLocation type="source" />
-        <InputLocation type="destination" />
+      <div>
+        <div className="p-2 md:pd-6 border-[2px] rounded-xl">
+          <p className="text-[20px] font-bold">get ride</p>
+          <InputLocation type="source" />
+          <InputLocation type="destination" />
 
-        <button onClick={handleSubmit}>search</button>
+          <button
+            className="p-3 bg-black w-full mt-5 text-white rounded-lg "
+            onClick={async (event) => {
+              event.preventDefault();
+              console.log("button is pressed ");
+              await requestRide({
+                onSuccess: (tx) => handleSetOnSuccess(tx),
+                onErro: (error) => console.log(error),
+              });
+            }}
+          >
+            Search
+          </button>
+        </div>
+        <CarListOptions />
       </div>
     </>
   );
 }
+
+// const handleSubmit = async (event) => {
+//   await requestRide({
+//     onSuccess: (tx) => handleSetOnSuccess(tx),
+//     onErro: (error) => console.log(error),
+//   });
+// };

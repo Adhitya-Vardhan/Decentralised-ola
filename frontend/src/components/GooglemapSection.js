@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useCallback } from "react";
 import { GoogleMap, MarkerF, DirectionsRenderer } from "@react-google-maps/api";
 import { SourceContext } from "../context/SourceContext";
 import { DestinationContext } from "../context/DestinationContext";
@@ -7,10 +7,10 @@ import console from "console-browserify";
 export default function GooglemapSection() {
   const containerStyle = {
     width: "100%",
-    height: window.innerWidth * 0.45,
+    height: window.innerWidth,
   };
 
-  const [directionRoutePoints, setDirectionRoutePoints] = useState([]);
+  const [directionRoutePoints, setDirectionRoutePoints] = useState();
   const { source, setSource } = useContext(SourceContext);
   const { destination, setDestination } = useContext(DestinationContext);
 
@@ -19,7 +19,7 @@ export default function GooglemapSection() {
     lng: -38.523,
   });
 
-  const [map, setMap] = React.useState(null);
+  const [map, setMap] = useState(null);
 
   useEffect(() => {
     if (source?.length != [] && map) {
@@ -52,7 +52,7 @@ export default function GooglemapSection() {
 
   const directionRoute = () => {
     if (!source || !destination) {
-      console.error("Source or destination is undefined.");
+      console.log("Source or destination is undefined.");
       return;
     }
     const DirectionsService = new window.google.maps.DirectionsService();
@@ -74,7 +74,7 @@ export default function GooglemapSection() {
     console.log("function is being called");
   };
 
-  const onLoad = React.useCallback(function callback(map) {
+  const onLoad = useCallback(function callback(map) {
     // This is just an example of getting and using the map instance!!! don't just blindly copy!
     const bounds = new window.google.maps.LatLngBounds(center);
     map.fitBounds(bounds);
@@ -82,7 +82,7 @@ export default function GooglemapSection() {
     setMap(map);
   }, []);
 
-  const onUnmount = React.useCallback(function callback(map) {
+  const onUnmount = useCallback(function callback(map) {
     setMap(null);
   }, []);
 

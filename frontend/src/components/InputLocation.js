@@ -54,7 +54,12 @@ export default function InputLocation({ type }) {
     }
   };
   return (
-    <div className="input" style={{ marginBottom: "10px" }}>
+    <div className="bg-slate-200 p-3 rounded-lg mt-3 flex items-center gap-4 ">
+      <img
+        src={type == "source" ? "./destination.png" : "./location.png"}
+        width={15}
+        height={15}
+      />
       <GooglePlacesAutocomplete
         selectProps={{
           value,
@@ -63,8 +68,16 @@ export default function InputLocation({ type }) {
           },
           placeholder: placeholder,
           isClearable: true,
+          className: "w-full",
           components: {
             DropdownIndicator: false,
+          },
+          styles: {
+            control: (provided) => ({
+              ...provided,
+              backgroundColor: "#00ffff00",
+              border: "none",
+            }),
           },
         }}
       />

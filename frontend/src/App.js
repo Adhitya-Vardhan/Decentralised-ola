@@ -9,28 +9,32 @@ import { DestinationContext } from "./context/DestinationContext";
 import { MoralisProvider } from "react-moralis";
 import DriverPage from "./pages/DriverPage";
 import { LoadScript } from "@react-google-maps/api";
+import { EventsContext } from "./context/EventsContext";
 
 function App() {
   const [source, setSource] = useState();
   const [destination, setDestination] = useState();
+  const [eve, setEve] = useState();
   return (
     <MoralisProvider initializeOnMount={false}>
       <SourceContext.Provider value={{ source, setSource }}>
         <DestinationContext.Provider value={{ destination, setDestination }}>
-          <LoadScript
-            libraries={["places"]}
-            googleMapsApiKey={process.env.REACT_APP_MAP_KEY}
-          >
-            <div>
-              <Router>
-                <Routes>
-                  <Route path="/" element={<HomePage />} />
-                  <Route path="/rider" element={<RiderPage />} />
-                  <Route path="/drive" element={<DriverPage />} />
-                </Routes>
-              </Router>
-            </div>
-          </LoadScript>
+          <EventsContext.Provider value={{ eve, setEve }}>
+            <LoadScript
+              libraries={["places"]}
+              googleMapsApiKey={process.env.REACT_APP_MAP_KEY}
+            >
+              <div>
+                <Router>
+                  <Routes>
+                    <Route path="/" element={<HomePage />} />
+                    <Route path="/rider" element={<RiderPage />} />
+                    <Route path="/drive" element={<DriverPage />} />
+                  </Routes>
+                </Router>
+              </div>
+            </LoadScript>
+          </EventsContext.Provider>
         </DestinationContext.Provider>
       </SourceContext.Provider>
     </MoralisProvider>
